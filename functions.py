@@ -22,7 +22,8 @@ def combine_pdfs(file1, file2, file3):
 
     # Create a file name for the combined PDF file
     file2_name = os.path.splitext(os.path.basename(file2))[0]
-    output_name = f'{file2_name} Final.pdf'
+    directory = os.path.dirname(file2)
+    output_name = f'{directory}/{file2_name} Final.pdf'
 
     # Write the combined PDF file to disk
     with open(output_name, 'wb') as f:
@@ -51,3 +52,11 @@ def replace_text_in_docx(docx_path, replaceable_text, replacement_text):
                     text = elem[1].text.replace(replaceable_text, replacement_text)
                     elem[1].text = text
     doc.save(docx_path)
+
+
+def delete_files(filePath):
+    """function to delete files using filepath"""
+    if os.path.exists(filePath):
+        os.remove(filePath)
+        return;
+    return;

@@ -98,6 +98,9 @@ class FileDialogs(QWidget):
 
         functions.combine_pdfs(translatedPdf_path, originalFile_path, certificatePdf_path);
 
+        functions.delete_files(certificatePdf_path)
+        functions.delete_files(translatedPdf_path)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
