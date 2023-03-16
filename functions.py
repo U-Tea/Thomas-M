@@ -4,8 +4,10 @@ from docx import Document
 from docx2pdf import convert
 from PyPDF2 import PdfMerger, PdfReader
 
-"""combine pdf"""
+
 def combine_pdfs(file1, file2, file3):
+
+    """Function to combine three pdfs"""
     # Create a merger object
     merger = PdfMerger()
 
@@ -30,13 +32,6 @@ def combine_pdfs(file1, file2, file3):
 
 
 
-
-
-'''function to create pdf from word file'''
-
-
-
-
 def word_to_pdf(input_file):
     """Convert the Word file to PDF using docx2pdf"""
     output_file = os.path.splitext(input_file)[0] + '.pdf'
@@ -45,16 +40,14 @@ def word_to_pdf(input_file):
 
 
 
-"""replace text"""
-
-
 def replace_text_in_docx(docx_path, replaceable_text, replacement_text):
+    """replace text in word file"""
     doc = Document(docx_path)
     for p in doc.paragraphs:
         if replaceable_text in p.text:
             inline = p.runs
-            for i in range(len(inline)):
-                if replaceable_text in inline[i].text:
-                    text = inline[i].text.replace(replaceable_text, replacement_text)
-                    inline[i].text = text
+            for elem in enumerate(inline):
+                if replaceable_text in elem[1].text:
+                    text = elem[1].text.replace(replaceable_text, replacement_text)
+                    elem[1].text = text
     doc.save(docx_path)

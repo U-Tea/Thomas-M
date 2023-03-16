@@ -19,6 +19,7 @@ class FileDialogs(QWidget):
         # create a button to print all file paths
         self.printButton = QPushButton("Combine")
         self.printButton.clicked.connect(self.printFilePaths)
+        self.printButton.setEnabled(False)
 
         # create a vertical layout for the window
         vbox = QVBoxLayout()
@@ -48,18 +49,30 @@ class FileDialogs(QWidget):
         self.setLayout(vbox)
 
         # connect the three file buttons to their corresponding file dialogs
-        self.button1.clicked.connect(lambda: self.showFileDialog(self.textbox1))
-        self.button2.clicked.connect(lambda: self.showFileDialog(self.textbox2))
-        self.button3.clicked.connect(lambda: self.showFileDialog(self.textbox3))
+        self.button1.clicked.connect(lambda: self.showFileDialog(self.textbox1, "Word Documents (*.docx)"));
+        self.button2.clicked.connect(lambda: self.showFileDialog(self.textbox2, "Pdf Documents (*.pdf)"));
+        self.button3.clicked.connect(lambda: self.showFileDialog(self.textbox3, "Word Documents (*.docx)"));
 
-    def showFileDialog(self, textbox):
+        #set geometry of the window
+        self.setGeometry(100, 100, 500, 200)
+
+    def showFileDialog(self, textbox, fileType):
         # show a file dialog and set the selected file name as the text of the corresponding text box
-        filepath, _ = QFileDialog.getOpenFileName(self, "Open file", "", "All Files (*);;Text Files (*.txt)")
+        filepath, _ = QFileDialog.getOpenFileName(self, "Open file", "", fileType)
         filename = os.path.basename(filepath)
         textbox.setText(filename)
 
         # set the selected file path as the tooltip for the corresponding text box
         textbox.setToolTip(filepath)
+
+        if not filepath:
+            textbox.clear()
+
+        # enable the print button if all three text boxes have a file name
+        if self.textbox1.text() and self.textbox2.text() and self.textbox3.text():
+            self.printButton.setEnabled(True)
+        else:
+            self.printButton.setEnabled(False)
 
     def printFilePaths(self):
         old_text = "Original File Name"
@@ -67,6 +80,14 @@ class FileDialogs(QWidget):
         originalFile_path = self.textbox2.toolTip()
         certificateFile_path = self.textbox3.toolTip()
         originalFile_Name = self.textbox2.text()
+
+        self.textbox1.clear()
+        self.textbox1.setToolTip('')
+        self.textbox2.clear()
+        self.textbox2.setToolTip('')
+        self.textbox3.clear()
+        self.textbox3.setToolTip('')
+        self.printButton.setEnabled(False)
 
         functions.replace_text_in_docx(certificateFile_path, old_text, originalFile_Name);
         functions.word_to_pdf(translatedFile_path);
