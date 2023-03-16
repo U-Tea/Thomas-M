@@ -1,21 +1,23 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QFileDialog, QLineEdit, QVBoxLayout, QHBoxLayout
 import os
+import functions
+
 
 class FileDialogs(QWidget):
     def __init__(self):
         super().__init__()
 
         # create three file buttons and their corresponding text boxes
-        self.button1 = QPushButton("Open File 1")
+        self.button1 = QPushButton("Select Translated File")
         self.textbox1 = QLineEdit()
-        self.button2 = QPushButton("Open File 2")
+        self.button2 = QPushButton("Select Original File")
         self.textbox2 = QLineEdit()
-        self.button3 = QPushButton("Open File 3")
+        self.button3 = QPushButton("Select Certificate File")
         self.textbox3 = QLineEdit()
 
         # create a button to print all file paths
-        self.printButton = QPushButton("Print File Paths")
+        self.printButton = QPushButton("Combine")
         self.printButton.clicked.connect(self.printFilePaths)
 
         # create a vertical layout for the window
@@ -60,13 +62,21 @@ class FileDialogs(QWidget):
         textbox.setToolTip(filepath)
 
     def printFilePaths(self):
-        # print the file paths of all three files
-        file1_path = self.textbox1.toolTip()
-        file2_path = self.textbox2.toolTip()
-        file3_path = self.textbox3.toolTip()
-        print("File 1 path:", file1_path)
-        print("File 2 path:", file2_path)
-        print("File 3 path:", file3_path)
+        old_text = "Original File Name"
+        translatedFile_path = self.textbox1.toolTip()
+        originalFile_path = self.textbox2.toolTip()
+        certificateFile_path = self.textbox3.toolTip()
+        originalFile_Name = self.textbox2.text()
+
+        functions.replace_text_in_docx(certificateFile_path, old_text, originalFile_Name);
+        functions.word_to_pdf(translatedFile_path);
+        functions.word_to_pdf(certificateFile_path);
+
+        certificatePdf_path = os.path.splitext(certificateFile_path)[0] + '.pdf'
+        translatedPdf_path = os.path.splitext(translatedFile_path)[0] + '.pdf'
+
+        functions.combine_pdfs(translatedPdf_path, originalFile_path, certificatePdf_path);
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

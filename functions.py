@@ -1,7 +1,5 @@
 """all the functions"""
 import os
-import sys
-import canvas
 from docx import Document
 from docx2pdf import convert
 from PyPDF2 import PdfMerger, PdfReader
@@ -21,8 +19,8 @@ def combine_pdfs(file1, file2, file3):
         merger.append(pdf3)
 
     # Create a file name for the combined PDF file
-    file1_name = os.path.splitext(os.path.basename(file1))[0]
-    output_name = f'{file1_name}.pdf'
+    file2_name = os.path.splitext(os.path.basename(file2))[0]
+    output_name = f'{file2_name} Final.pdf'
 
     # Write the combined PDF file to disk
     with open(output_name, 'wb') as f:
@@ -40,23 +38,10 @@ def combine_pdfs(file1, file2, file3):
 
 
 def word_to_pdf(input_file):
-    # Convert the Word file to PDF using docx2pdf
+    """Convert the Word file to PDF using docx2pdf"""
     output_file = os.path.splitext(input_file)[0] + '.pdf'
     convert(input_file, output_file)
 
-    # Remove the page numbers added by docx2pdf using reportlab
-    with open(output_file, 'rb') as f:
-        data = f.read()
-
-    with open(output_file, 'wb') as f:
-        canvas_obj = canvas.Canvas(f)
-        canvas_obj.setFont("Helvetica", 9)
-        page_width, page_height = canvas_obj._pagesize
-        for page in canvas_obj.splitTextByLength(data, max_len=page_width*page_height):
-            canvas_obj.showPage()
-            canvas_obj.drawString(0, 0, page.decode("utf-8"))
-
-    return output_file
 
 
 
