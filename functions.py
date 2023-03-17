@@ -1,5 +1,6 @@
 """all the functions"""
 import os
+import shutil
 from docx import Document
 from docx2pdf import convert
 from PyPDF2 import PdfMerger, PdfReader
@@ -54,9 +55,19 @@ def replace_text_in_docx(docx_path, replaceable_text, replacement_text):
     doc.save(docx_path)
 
 
+
+
+def copy_file(src_path, dest_path):
+    try:
+        shutil.copy(src_path, dest_path)
+        return
+    except IOError as e:
+        print(f"Unable to copy file: {e}")
+
+
 def delete_files(filePath):
     """function to delete files using filepath"""
     if os.path.exists(filePath):
         os.remove(filePath)
-        return;
-    return;
+        return
+    return
